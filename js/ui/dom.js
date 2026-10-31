@@ -71,7 +71,40 @@ export function formatFact(a, b) {
 
 export function formatSeconds(ms) {
   if (ms === null || ms === undefined) return '—';
-  return `${(ms / 1000).toFixed(1).replace('.', ',')} с`;
+  return `${(ms / 1000).toFixed(1).replace('.', ',')}\u00a0с`;
+}
+
+/** Пример всегда не меньше 32 px — так требует методика крупного шрифта. */
+const MIN_EXAMPLE_PX = 32;
+
+/** Уменьшает шрифт строки, пока она не поместится по ширине, но не меньше min. */
+export function fitText(el, min = MIN_EXAMPLE_PX) {
+  if (!el || !el.isConnected) return;
+  el.style.fontSize = el.dataset.fitBase || '';
+  let size = parseFloat(getComputedStyle(el).fontSize);
+  for (let i = 0; i < 40 && el.scrollWidth > el.clientWidth + 1 && size > min; i++) {
+    size = Math.max(min, size - 2);
+    el.style.fontSize = `${size}px`;
+  }
+}
+
+/**
+ * Подгоняет шрифт строки с примером под ширину: сразу, при каждом изменении
+ * содержимого (например, набрали третью цифру) и при повороте экрана.
+ */
+export function autoFit(el, min = MIN_EXAMPLE_PX) {
+  el.dataset.fit = String(min);
+  el.dataset.fitBase = el.style.fontSize || '';
+  const run = () => fitText(el, min);
+  new MutationObserver(run).observe(el, { childList: true, subtree: true, characterData: true });
+  requestAnimationFrame(run);
+  return el;
+}
+
+if (typeof window !== 'undefined') {
+  window.addEventListener('resize', () => {
+    for (const el of document.querySelectorAll('[data-fit]')) fitText(el, Number(el.dataset.fit));
+  });
 }
 
 export function formatPercent(x) {

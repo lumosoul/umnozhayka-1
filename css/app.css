@@ -404,8 +404,8 @@ p { margin: 0 0 12px; }
 }
 .problem .slot {
   display: inline-block;
-  min-width: 1.6em;
-  padding: 0 0.12em;
+  min-width: 1.3em;
+  padding: 0 0.1em;
   border-bottom: 5px solid var(--primary);
   color: var(--primary);
 }
@@ -473,6 +473,7 @@ p { margin: 0 0 12px; }
   animation: screen-in var(--t) ease-out;
 }
 .coach .answer-line {
+  white-space: nowrap;
   font-size: clamp(36px, 10vw, 56px);
   font-weight: 850;
   text-align: center;
@@ -529,6 +530,7 @@ p { margin: 0 0 12px; }
 .slide-dots span.on { background: var(--primary); }
 
 .fact-card .big-fact {
+  white-space: nowrap;
   font-size: clamp(44px, 12vw, 72px);
   font-weight: 850;
   text-align: center;
@@ -538,6 +540,7 @@ p { margin: 0 0 12px; }
 /* ---------- сетка 10×10 ---------- */
 
 .table-grid {
+  container-type: inline-size;
   display: grid;
   grid-template-columns: repeat(11, 1fr);
   gap: 3px;
@@ -574,8 +577,8 @@ p { margin: 0 0 12px; }
   transition: transform var(--t-fast), background-color var(--t);
 }
 .cell:active { transform: scale(0.94); }
-.cell.learning { background: var(--st-learning); }
-.cell.know { background: var(--st-know); }
+.cell.learning { background: var(--st-learning); border: 2px dashed #6b5200; }
+.cell.know { background: var(--st-know); border-color: #2e7d46; }
 .cell.auto { background: var(--st-auto); color: #fff; border-color: #145c37; }
 .cell .mark {
   position: absolute;
@@ -586,6 +589,11 @@ p { margin: 0 0 12px; }
 }
 .cell.selected { outline: 3px solid var(--ink); outline-offset: 1px; z-index: 1; }
 .table-grid.mini .cell { font-size: clamp(8px, 2.3vw, 13px); border-radius: 4px; }
+/* На узкой таблице значки статуса налезали бы на двузначные числа: статус и так
+   различим по цвету, рамке (у «изучается» — пунктир) и подписи для читалок. */
+@container (max-width: 520px) {
+  .cell .mark { display: none; }
+}
 
 .legend {
   display: flex;
@@ -772,13 +780,36 @@ p { margin: 0 0 12px; }
   border: 2px solid var(--line);
   background: var(--surface);
 }
-.list .fact { font-weight: 850; font-size: 20px; min-width: 92px; font-variant-numeric: tabular-nums; }
+.list .fact { font-weight: 850; font-size: 20px; min-width: 92px; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.list li.hard-item {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  grid-template-areas: "fact meta status";
+  gap: 2px 12px;
+}
+.hard-item .fact { grid-area: fact; }
+.hard-item .hard-meta { grid-area: meta; }
+.hard-item .hard-status { grid-area: status; white-space: nowrap; }
+@media (max-width: 560px) {
+  .list li.hard-item {
+    grid-template-columns: 1fr auto;
+    grid-template-areas: "fact status" "meta meta";
+  }
+}
 
 .table-wrap { overflow-x: auto; max-width: 100%; }
 table.log { border-collapse: collapse; width: 100%; font-size: 15px; font-variant-numeric: tabular-nums; }
 table.log th, table.log td { text-align: left; padding: 8px 10px; border-bottom: 1.5px solid var(--paper-line); white-space: nowrap; }
 table.log th { color: var(--ink-soft); font-weight: 700; }
 table.log tr.day-row td { font-weight: 800; background: var(--primary-soft); }
+@media (max-width: 600px) {
+  table.log thead { display: none; }
+  table.log, table.log tbody, table.log tr, table.log td { display: block; width: 100%; }
+  table.log tr { padding: 6px 0; border-bottom: 1.5px solid var(--paper-line); }
+  table.log td { display: inline-block; width: 50%; border: 0; padding: 2px 10px; white-space: normal; }
+  table.log tr.day-row td { display: block; width: 100%; padding: 8px 10px; border-radius: 8px; }
+  table.log td[data-label]::before { content: attr(data-label) ": "; color: var(--ink-soft); font-weight: 650; }
+}
 
 /* ---------- перенос ---------- */
 

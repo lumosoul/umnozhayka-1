@@ -2,7 +2,7 @@
 // светло-зелёный — знает, тёмно-зелёный — автоматизм). Касание клетки открывает
 // точность, среднее время и ошибки. Столбцы — первый множитель, строки — второй.
 
-import { h, formatFact, formatPercent, formatSeconds, TIMES } from './dom.js';
+import { h, formatFact, formatPercent, formatSeconds, autoFit, TIMES } from './dom.js';
 import { openModal } from './modal.js';
 import { factKey, factStatus, twinKey } from '../core/facts.js';
 import { factDetails } from '../core/stats.js';
@@ -49,7 +49,7 @@ function detailContent(facts, k) {
       `${(e[2] / 1000).toFixed(1).replace('.', ',')}`));
   }
   return h('div', { class: 'fact-detail stack' },
-    h('div', { class: 'fact-card' }, h('div', { class: 'big-fact' }, `${d.a} ${TIMES} ${d.b} = ${p}`)),
+    h('div', { class: 'fact-card' }, autoFit(h('div', { class: 'big-fact' }, `${d.a} ${TIMES} ${d.b} = ${p}`))),
     dl,
     d.history.length ? h('div', { class: 'stack', style: { gap: '6px' } },
       h('div', { class: 'muted small' }, `Последние ${withWord(Math.min(10, d.history.length), 'ответ', 'ответа', 'ответов')} (секунды; зелёный — верно):`),

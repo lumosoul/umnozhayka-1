@@ -40,6 +40,8 @@ const NEEDS_PROFILE = new Set(['home', 'diagIntro', 'diagnostic', 'diagResult', 
 const root = document.getElementById('app');
 let current = null;
 let navigating = false;
+// Новая версия приложения скачана: перезагрузимся при выходе на главный экран, не посреди занятия.
+let updateReady = false;
 
 const ctx = {
   async go(name, params = {}, { replace = false } = {}) {
@@ -49,6 +51,11 @@ const ctx = {
     }
     navigating = true;
     try {
+      if (updateReady && ['home', 'profiles', 'newProfile'].includes(name)) {
+        updateReady = false;
+        location.reload();
+        return;
+      }
       if (NEEDS_PROFILE.has(name) && !store.current) name = store.profiles.length ? 'profiles' : 'newProfile';
       if (name === 'blitz' && !blitzUnlocked(store.current.facts)) name = 'home';
       if (name === 'home' && store.current && !store.current.profile.diag.done) name = 'diagIntro';
@@ -116,6 +123,12 @@ window.addEventListener('popstate', () => {
 function registerServiceWorker() {
   if (!('serviceWorker' in navigator)) return;
   if (location.protocol !== 'https:' && location.hostname !== 'localhost' && location.hostname !== '127.0.0.1') return;
+  const hadController = !!navigator.serviceWorker.controller;
+  navigator.serviceWorker.addEventListener('controllerchange', () => {
+    if (!hadController) return; // первая установка — перезагружать незачем
+    if (current && ['home', 'profiles', 'newProfile'].includes(current.name)) location.reload();
+    else updateReady = true;
+  });
   navigator.serviceWorker.register('./sw.js').catch((e) => console.warn('Service worker не зарегистрирован', e));
 }
 

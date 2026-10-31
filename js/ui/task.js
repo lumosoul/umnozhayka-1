@@ -2,7 +2,7 @@
 // Время считается от момента, когда пример нарисован, до выбора варианта
 // (или до последней набранной цифры — нажатие «Готово» не учитывается).
 
-import { h, clear, icon, afterPaint, TIMES } from './dom.js';
+import { h, clear, icon, afterPaint, autoFit, TIMES } from './dom.js';
 import { createKeypad } from './keypad.js';
 import { setKeyHandler } from './keys.js';
 import { sound } from './sound.js';
@@ -29,7 +29,7 @@ export function askQuestion(container, q, opts = {}) {
     };
     const elapsed = () => Math.max(0, Math.round((lastEdit || performance.now()) - t0));
 
-    const problem = h('div', { class: 'problem', role: 'heading', 'aria-level': '2' });
+    const problem = autoFit(h('div', { class: 'problem', role: 'heading', 'aria-level': '2' }));
     const wrap = h('div', { class: 'task' }, problem);
     container.append(wrap);
     let keyHandler = null;

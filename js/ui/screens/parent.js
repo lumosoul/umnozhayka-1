@@ -2,7 +2,7 @@
 // среднего времени ответа, самые трудные примеры, занятия по дням), перенос данных
 // и настройки (звук, профили).
 
-import { h, clear, icon, formatPercent, formatSeconds, formatFact, TIMES } from '../dom.js';
+import { h, clear, icon, formatPercent, formatSeconds, formatFact, autoFit, TIMES } from '../dom.js';
 import { topbar, backButton, screen } from '../shell.js';
 import { createKeypad } from '../keypad.js';
 import { setKeyHandler } from '../keys.js';
@@ -30,7 +30,7 @@ export function parentGateScreen(ctx, { then = 'parent', thenParams = {} } = {})
   let a = randInt(rng, 12, 39);
   let b = randInt(rng, 12, 29);
   const back = () => ctx.go(store.current ? 'home' : store.profiles.length ? 'profiles' : 'newProfile');
-  const question = h('div', { class: 'problem', style: { fontSize: 'clamp(36px, 10vw, 56px)' } });
+  const question = autoFit(h('div', { class: 'problem', style: { fontSize: 'clamp(36px, 10vw, 56px)' } }));
   const note = h('p', { class: 'center-text muted', 'aria-live': 'polite' }, 'Реши пример, чтобы открыть раздел для взрослых.');
   const render = (val = '') => {
     clear(question);
@@ -99,10 +99,10 @@ async function statsPanel(container, pid) {
 
   const hard = hardestFacts(facts, 8);
   const hardList = hard.length
-    ? h('ul', { class: 'list' }, ...hard.map((x) => h('li', {},
-      h('button', { type: 'button', class: 'btn ghost fact', style: { minHeight: '48px', padding: '4px 8px' }, on: { click: () => openFactDetail(facts, x.k) } }, formatFact(x.a, x.b)),
-      h('span', {}, `точность ${formatPercent(x.accuracy)}, ${formatSeconds(x.avgMs)}, ошибок ${x.wrong}`),
-      h('span', { class: 'small muted', style: { marginLeft: 'auto' } }, STATUS_LABELS[x.status]))))
+    ? h('ul', { class: 'list' }, ...hard.map((x) => h('li', { class: 'hard-item' },
+      h('button', { type: 'button', class: 'btn ghost fact', style: { minHeight: '48px', padding: '4px 8px', justifyContent: 'flex-start' }, on: { click: () => openFactDetail(facts, x.k) } }, formatFact(x.a, x.b)),
+      h('span', { class: 'hard-meta' }, `точность ${formatPercent(x.accuracy)}, ${formatSeconds(x.avgMs)}, ошибок\u00a0${x.wrong}`),
+      h('span', { class: 'hard-status small muted' }, STATUS_LABELS[x.status]))))
     : h('p', { class: 'muted' }, 'Трудных примеров пока нет.');
 
   const table = h('table', { class: 'log' },
@@ -117,13 +117,13 @@ async function statsPanel(container, pid) {
     for (const x of g.list) {
       const t = new Date(x.start);
       tbody.append(h('tr', {},
-        h('td', {}, `${String(t.getHours()).padStart(2, '0')}:${String(t.getMinutes()).padStart(2, '0')}`),
-        h('td', {}, TYPE[x.type] + (x.done ? '' : ' (не закончено)')),
-        h('td', {}, String(x.answered)),
-        h('td', {}, formatPercent(x.answered ? x.correct / x.answered : null)),
-        h('td', {}, formatSeconds(x.answered ? x.tSum / x.answered : null)),
-        h('td', {}, String(Math.max(0, Math.round((x.end - x.start) / 60000)))),
-        h('td', {}, x.type === 'diag' ? '—' : String(x.stars))));
+        h('td', { 'data-label': 'Время' }, `${String(t.getHours()).padStart(2, '0')}:${String(t.getMinutes()).padStart(2, '0')}`),
+        h('td', { 'data-label': 'Что' }, TYPE[x.type] + (x.done ? '' : ' (не закончено)')),
+        h('td', { 'data-label': 'Примеров' }, String(x.answered)),
+        h('td', { 'data-label': 'Верно' }, formatPercent(x.answered ? x.correct / x.answered : null)),
+        h('td', { 'data-label': 'Ср. время' }, formatSeconds(x.answered ? x.tSum / x.answered : null)),
+        h('td', { 'data-label': 'Минут' }, String(Math.max(0, Math.round((x.end - x.start) / 60000)))),
+        h('td', { 'data-label': 'Звёзды' }, x.type === 'diag' ? '—' : String(x.stars))));
     }
   }
   table.append(tbody);

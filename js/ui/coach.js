@@ -1,7 +1,7 @@
 // Спокойный разбор ошибки: верный ответ, подсвеченная сетка точек, подсказка-приём,
 // и ребёнок сам вводит верный ответ. Никакого красного и никаких «неправильно».
 
-import { h, clear, TIMES } from './dom.js';
+import { h, clear, autoFit, TIMES } from './dom.js';
 import { dotArray, fingers } from './visuals.js';
 import { createKeypad } from './keypad.js';
 import { setKeyHandler } from './keys.js';
@@ -13,7 +13,7 @@ export function runCorrection(container, q, facts, { owlSay = () => {} } = {}) {
     clear(container);
     const expected = q.fmt === 'missing' ? q.answer : q.p;
     const hint = hintFor(q.k, facts);
-    const line = h('div', { class: 'answer-line', 'aria-live': 'polite' });
+    const line = autoFit(h('div', { class: 'answer-line', 'aria-live': 'polite' }));
     if (q.fmt === 'missing') {
       line.append(
         q.hide === 'a' ? h('span', { class: 'hl' }, String(q.a)) : String(q.a),
@@ -28,7 +28,7 @@ export function runCorrection(container, q, facts, { owlSay = () => {} } = {}) {
       lead = q.answer ? `Это было верно: ${q.a} ${TIMES} ${q.b} = ${q.p}.` : `На самом деле ${q.a} ${TIMES} ${q.b} = ${q.p}, а не ${q.shown}.`;
     }
     const slotView = h('span', { class: 'slot empty' }, '?');
-    const ask = h('div', { class: 'problem', style: { fontSize: 'clamp(36px, 10vw, 56px)', padding: '12px' } });
+    const ask = autoFit(h('div', { class: 'problem', style: { fontSize: 'clamp(36px, 10vw, 56px)', padding: '12px' } }));
     const renderAsk = (val) => {
       clear(ask);
       slotView.textContent = val || '?';

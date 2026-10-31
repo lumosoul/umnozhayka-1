@@ -1,7 +1,7 @@
 // Объяснения: слайды столбца (группы, сетка точек, числовой луч, приём, перестановка),
 // правило умножения на 0 с мини-проверкой и карточка «Новый пример».
 
-import { h, clear, TIMES, delay } from './dom.js';
+import { h, clear, autoFit, TIMES, delay } from './dom.js';
 import { dotArray, groupsView, sumText, numberLine, fingers, swapView, zeroGroups, zeroEmpty } from './visuals.js';
 import { columnIntroSlides, zeroRuleSlides, ZERO_QUIZ, newFactCard } from '../core/tricks.js';
 import { setKeyHandler } from './keys.js';
@@ -156,7 +156,7 @@ export async function runZeroRule(container, owlSay = () => {}) {
         grid.append(b);
       }
       container.append(h('div', { class: 'task' },
-        h('div', { class: 'problem' }, `${item.a} ${TIMES} ${item.b} = `, h('span', { class: 'q' }, '?')),
+        autoFit(h('div', { class: 'problem' }, `${item.a} ${TIMES} ${item.b} = `, h('span', { class: 'q' }, '?'))),
         grid, feedback));
       setKeyHandler((e) => {
         const n = Number(e.key);
@@ -177,7 +177,7 @@ export function runFactCard(container, k, facts) {
     ok.addEventListener('click', () => { sound.play('page'); setKeyHandler(null); resolve(); });
     container.append(h('section', { class: 'sheet fact-card stack' },
       h('h2', {}, card.title),
-      h('div', { class: 'big-fact' }, `${card.a} ${TIMES} ${card.b} = ${card.p}`),
+      autoFit(h('div', { class: 'big-fact' }, `${card.a} ${TIMES} ${card.b} = ${card.p}`)),
       h('div', { class: 'visual' }, card.fingers ? fingers(card.fingers) : dotArray(card.a, card.b)),
       card.sum ? h('div', { class: 'sum-line' }, card.sum) : null,
       h('p', { class: 'text', style: { fontWeight: 650 } }, card.trick),
