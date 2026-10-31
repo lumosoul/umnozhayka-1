@@ -1,12 +1,25 @@
 // Маленькие помощники для построения интерфейса без библиотек.
 
 const SVG_NS = 'http://www.w3.org/2000/svg';
+const NBSP = '\u00a0';
+
+/**
+ * Типографика для текстов интерфейса: выражение «3 × 7 = 21» не разрывается
+ * переносом строки, знак «+», «−», «→», «…» не уходит в начало строки (длинная
+ * сумма переносится только после него), число не отрывается от «%», «с», «мин».
+ */
+export function typo(text) {
+  return String(text)
+    .replace(/(\d) (%|с(?![а-яё])|мин)/g, `$1${NBSP}$2`)
+    .replace(/ ([×=+−→…—])(?= |$)/g, `${NBSP}$1`)
+    .replace(/([×=]) /g, `$1${NBSP}`);
+}
 
 function applyAttrs(el, attrs) {
   for (const [k, v] of Object.entries(attrs || {})) {
     if (v === undefined || v === null || v === false) continue;
     if (k === 'class') el.setAttribute('class', v);
-    else if (k === 'text') el.textContent = v;
+    else if (k === 'text') el.textContent = typo(v);
     else if (k === 'html') el.innerHTML = v;
     else if (k === 'style' && typeof v === 'object') Object.assign(el.style, v);
     else if (k === 'on') for (const [ev, fn] of Object.entries(v)) el.addEventListener(ev, fn);
@@ -19,7 +32,7 @@ function applyAttrs(el, attrs) {
 function append(el, children) {
   for (const c of children.flat(Infinity)) {
     if (c === null || c === undefined || c === false) continue;
-    el.append(c instanceof Node ? c : document.createTextNode(String(c)));
+    el.append(c instanceof Node ? c : document.createTextNode(el.namespaceURI === SVG_NS ? String(c) : typo(c)));
   }
 }
 

@@ -149,7 +149,7 @@ export async function runZeroRule(container, owlSay = () => {}) {
           } else {
             sound.play('gentle');
             b.disabled = true;
-            feedback.textContent = 'Помни: если есть 0, ответ тоже 0.';
+            feedback.textContent = 'Помни: если есть 0, ответ тоже\u00a00.';
             owlSay('Подсказка: ищи ноль!', 'think');
           }
         });

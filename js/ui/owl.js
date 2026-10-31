@@ -1,7 +1,7 @@
 // Совёнок Угу — помощник. Рисуется SVG, настроение меняется классами:
 // happy (глаза-дуги), cheer (крылья вверх), think (смотрит вверх), bounce (подпрыгнуть).
 
-import { s, h } from './dom.js';
+import { s, h, typo } from './dom.js';
 
 export function owlSVG({ size = '', label = 'Совёнок Угу' } = {}) {
   const eye = (cx) => [
@@ -57,7 +57,7 @@ export function owlLine(text = '', { size = '', mood = '' } = {}) {
     owl,
     bubble,
     say(t, m) {
-      bubble.textContent = t;
+      bubble.textContent = typo(t);
       if (m !== undefined) setMood(owl, m);
     },
   };

@@ -111,7 +111,7 @@ export function numberLine(step, jumps, revealed = jumps) {
 /** Пальцы для ×9: загнут палец номер n; слева — десятки, справа — единицы. */
 export function fingers(n) {
   const W = 340;
-  const H = 150;
+  const H = 166;
   const svg = s('svg', { viewBox: `0 0 ${W} ${H}`, role: 'img', 'aria-label': `Загнут ${n}-й палец: слева ${n - 1}, справа ${10 - n}` });
   const heights = [52, 74, 82, 76, 62];
   for (let i = 0; i < 10; i++) {
@@ -130,8 +130,8 @@ export function fingers(n) {
   }
   svg.append(s('rect', { x: 8, y: 100, width: 152, height: 12, rx: 6, fill: '#e4ebfa' }));
   svg.append(s('rect', { x: 182, y: 100, width: 152, height: 12, rx: 6, fill: '#e4ebfa' }));
-  svg.append(s('text', { x: 4 + (n - 1) * 15, y: 146, 'text-anchor': 'middle', 'font-size': 14, 'font-weight': 800, fill: '#2b59c3' }, n > 1 ? `${n - 1}` : '0'));
-  svg.append(s('text', { x: 340 - (10 - n) * 15, y: 146, 'text-anchor': 'middle', 'font-size': 14, 'font-weight': 800, fill: '#5b4bc4' }, String(10 - n)));
+  svg.append(s('text', { x: 4 + (n - 1) * 15, y: 158, 'text-anchor': 'middle', 'font-size': 14, 'font-weight': 800, fill: '#2b59c3' }, n > 1 ? `${n - 1}` : '0'));
+  svg.append(s('text', { x: Math.min(330, 340 - (10 - n) * 15), y: 158, 'text-anchor': 'middle', 'font-size': 14, 'font-weight': 800, fill: '#5b4bc4' }, String(10 - n)));
   return h('div', { class: 'stack', style: { alignItems: 'center', gap: '4px' } },
     svg,
     h('div', { class: 'muted small center-text' }, `Слева ${n - 1}, справа ${10 - n} → ${n} ${TIMES} 9 = ${n * 9}`));

@@ -30,7 +30,7 @@ export function parentGateScreen(ctx, { then = 'parent', thenParams = {} } = {})
   let a = randInt(rng, 12, 39);
   let b = randInt(rng, 12, 29);
   const back = () => ctx.go(store.current ? 'home' : store.profiles.length ? 'profiles' : 'newProfile');
-  const question = autoFit(h('div', { class: 'problem', style: { fontSize: 'clamp(36px, 10vw, 56px)' } }));
+  const question = autoFit(h('div', { class: 'problem gate', style: { fontSize: 'clamp(36px, 10vw, 56px)' } }), 24);
   const note = h('p', { class: 'center-text muted', 'aria-live': 'polite' }, 'Реши пример, чтобы открыть раздел для взрослых.');
   const render = (val = '') => {
     clear(question);

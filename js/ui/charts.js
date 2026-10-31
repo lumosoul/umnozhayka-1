@@ -33,7 +33,7 @@ function frame({ points, yFormat, title, W }) {
   const every = Math.max(1, Math.ceil((points.length * 64) / iw));
   points.forEach((p, i) => {
     const last = i === points.length - 1;
-    if (last || (i % every === 0 && (points.length - 1 - i) >= every * 0.6)) {
+    if (last || (i % every === 0 && (points.length - 1 - i) >= every)) {
       svg.append(s('text', { class: 'axis-label', x: X(i), y: H - 8, 'text-anchor': last ? 'end' : i === 0 ? 'start' : 'middle' }, p.label));
     }
   });
@@ -75,7 +75,7 @@ function responsive(figure, draw) {
     clear(holder);
     holder.append(draw(Math.max(260, w)));
   };
-  if (typeof ResizeObserver === 'function') new ResizeObserver(render).observe(holder);
+  if (typeof ResizeObserver === 'function') new ResizeObserver(() => requestAnimationFrame(render)).observe(holder);
   requestAnimationFrame(render);
 }
 

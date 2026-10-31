@@ -1,7 +1,7 @@
 // Спокойный разбор ошибки: верный ответ, подсвеченная сетка точек, подсказка-приём,
 // и ребёнок сам вводит верный ответ. Никакого красного и никаких «неправильно».
 
-import { h, clear, autoFit, TIMES } from './dom.js';
+import { h, clear, autoFit, typo, TIMES } from './dom.js';
 import { dotArray, fingers } from './visuals.js';
 import { createKeypad } from './keypad.js';
 import { setKeyHandler } from './keys.js';
@@ -53,7 +53,7 @@ export function runCorrection(container, q, facts, { owlSay = () => {} } = {}) {
           resolve();
         } else {
           sound.play('gentle');
-          note.textContent = `Посмотри ещё раз: ответ ${expected}.`;
+          note.textContent = typo(`Посмотри ещё раз: ответ ${expected}.`);
           owlSay(`Ответ — ${expected}. Попробуй ещё!`, 'think');
           pad.clear();
         }

@@ -28,7 +28,7 @@ export function progressScreen(ctx) {
 
 export function libraryScreen(ctx) {
   const stage = h('div', { class: 'stack' });
-  const list = h('div', { class: 'btn-row' });
+  const list = h('div', { class: 'btn-row lib-list' });
   const back = () => ctx.go('home');
   const showList = () => {
     clear(stage);
