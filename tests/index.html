@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Умножайка — модульные тесты</title>
+  <style>
+    body { font: 16px/1.4 system-ui, sans-serif; margin: 16px; color: #1d2847; background: #f6f9ff; }
+    h1 { font-size: 22px; }
+    li { margin: 2px 0; }
+    .ok { color: #1d7a49; }
+    .fail { color: #1d2847; background: #fff3d1; font-weight: 700; }
+    pre { white-space: pre-wrap; font-size: 13px; }
+    #summary { font-weight: 800; font-size: 18px; }
+  </style>
+</head>
+<body>
+  <h1>Модульные тесты Умножайки</h1>
+  <p id="summary">Тесты выполняются…</p>
+  <ol id="results"></ol>
+  <script type="module">
+    import { run } from './harness.js';
+    import './all.js';
+    const list = document.getElementById('results');
+    const summary = await run((r) => {
+      const li = document.createElement('li');
+      li.className = r.ok ? 'ok' : 'fail';
+      li.textContent = `${r.ok ? '✓' : '✗'} ${r.name} (${r.ms} мс)`;
+      if (!r.ok) {
+        const pre = document.createElement('pre');
+        pre.textContent = String(r.error && (r.error.stack || r.error.message));
+        li.append(pre);
+      }
+      list.append(li);
+    });
+    const el = document.getElementById('summary');
+    el.textContent = `Пройдено: ${summary.passed}, с ошибками: ${summary.failed}`;
+    document.body.dataset.done = summary.failed ? 'fail' : 'ok';
+    window.testSummary = summary;
+  </script>
+</body>
+</html>
